@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel processing</title>
+    <link rel="stylesheet" href="assets/css/style.min.css">
+</head>
+<body>
+    <h1>Сборка описаний с характеристиками</h1>
+
+    <section class="main">
+        <div class="control">
+            <div class="choice">
+                <div>
+                    <h2 class="choice__title">Выбор файлов:</h2>
+                    <label class="input-file">
+                        <!-- <span>Выберите файл с описаниями</span> -->
+                        <input type="file" name="file" id="descr-file" placeholder="Выберите файл с описаниями" required/>
+                        <span class="input-file-btn">Выберите файл с описаниями</span>           
+	   	                <span class="input-file-text">файл ОПИСАНИЙ</span>		
+	   	            </label>
+
+                    <label class="input-file">
+                        <!-- <span>Выберите файл со свойстами</span> -->
+                        <input type="file" name="file" id="specs-file" placeholder="Выберите файл со свойстами" required/>		
+                        <span class="input-file-btn">Выберите файл со свойствами</span>           
+	   	                <span class="input-file-text">файл СВОЙСТВ</span>
+                    </label>
+                </div>
+
+                <div class="start_clear_btns">
+                    <button id="read-btn">Прочесть данные</button>
+                    <button id="clear-btn">Очистить форму</button>
+                </div>
+
+                
+            </div>
+            <div class="service_panel">
+                <h2 class="tasks__title">Сервисная панель:</h2>
+                <div class="messages">
+                    <ul class="messages_list">
+                    
+                    </ul>
+                </div>   
+            </div>
+
+            
+        </div>
+        <div class="specs_panel">
+            <h2 class="tasks__title">Настройка порядка характеристик</h2>
+      
+            <ul class="tasks_list">
+            
+            </ul>
+            <div class="task_control hidden">
+                <button id="processing-btn">Обработать список</button>
+                <button id="reload-btn">Сбросить порядок</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="service_panel">
+        
+    
+    </section>
+    
+
+
+    <script src="script.js"></script>
+</body>
+</html>
