@@ -13,8 +13,6 @@ let newWs = undefined;
 
 //________________________________________
 
-const scroll = calcScroll();
-// document.body.style.marginRight = `${scroll}px`;
 
 const specsFile = document.querySelector('#specs-file');
 const descrFile = document.querySelector('#descr-file');
@@ -143,21 +141,6 @@ reloadBtn.addEventListener('click', () => {
 
 //_________functions________________________________________________
 
-function calcScroll() {
-    let div = document.createElement('div');
-
-    div.style.width = '50px';
-    div.style.height = '50px';
-    div.style.overflow = 'scroll';
-    div.style.visibility = 'hidden';
-
-    document.body.appendChild(div);
-
-    let scrollWidth = div.offsetWidth - div.clientWidth;
-    div.remove(); 
-
-    return scrollWidth; 
-}
 
 function clearForm() {
     
