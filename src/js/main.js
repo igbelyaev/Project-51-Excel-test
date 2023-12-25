@@ -57,8 +57,6 @@ readBtn.addEventListener('click', (e) => {
         
         const timeId = setTimeout(function() {
             wsDescr = workbook.addWorksheet('Descr');
-            console.log(workbook.worksheets[0].name);
-            console.log(wbDescr.worksheets[0].name);
             ws = workbook.worksheets[0];
             // ws = workbook.getWorksheet('TDSheet');
             newWs = wbDescr.worksheets[0];
@@ -117,7 +115,6 @@ readBtn.addEventListener('click', (e) => {
 clearBtn.addEventListener('click', () => clearForm());
 
 processBtn.addEventListener('click', (e) => {
-    console.log('сработало событие кнопки обработки');
     messagesList.innerHTML = '';
     processingArray(specsTemp, specs);
     writeSpecs(specs, newLine);
@@ -432,7 +429,7 @@ function getSpecsList() {
             const cell = row.getCell(i);
             let value = cell.value;
     
-            if (cell.value !== 'id' && cell.value !== 'Артикул' && cell.value !== 'Наименование') {
+            if (cell.value !== 'id' && cell.value !== 'Артикул' && cell.value !== 'Наименование' && !cell.value.includes('Часто ищут') && !cell.value.includes('Сленг')) {
                 
                 value = value.indexOf(',  (id') == -1 ? value.slice(0, value.indexOf(" (id")) : value.slice(0, value.indexOf(",  (id"));
 

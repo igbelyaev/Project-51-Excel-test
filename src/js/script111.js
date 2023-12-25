@@ -22,3 +22,6 @@ console.log(str.slice(0, str.indexOf(",  (id")));
 const str1 = 'Размеры, см (id:0db3c53e-d603-11e8-80c2-00155dfe2b51)';
 console.log(str1.indexOf(",  (id"));
 console.log(str1.slice(0, str1.indexOf(",  (id")));
+
+const str2 = 'Часто ищут,  (id:ce8c027a-aa90-11ea-80c8-00155dfc0b56)';
+console.log(str2.includes('Часто ищут'));
