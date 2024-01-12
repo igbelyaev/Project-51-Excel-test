@@ -37,6 +37,7 @@
 
                 
             </div>
+            <div class="underline"></div>
             <div class="service_panel">
                 <h2 class="tasks__title">Сервисная панель:</h2>
                 <div class="messages">
@@ -50,10 +51,22 @@
         </div>
         <div class="specs_panel">
             <h2 class="tasks__title">Настройка порядка характеристик</h2>
-      
-            <ul class="tasks_list">
             
-            </ul>
+            <div class="task_box hidden">
+                <ul class="tasks_list"></ul>
+                <ul class="tasks_canceled hidden"></ul>
+            </div>
+            <div class="btn_box hidden">
+                <div class="drag_control">
+                    <button id="tasks-esc-btn">Снять выделение</button>
+                    <button id="tasks-move-btn">Переместить ></button>
+                </div>
+                <div class="drag_control">
+                    <button id="cancel-move-btn">< Переместить</button>
+                    <button id="cancel-esc-btn">Снять выделение</button>
+                </div>
+            </div>
+            
             <div class="task_control hidden">
                 <button id="processing-btn">Обработать список</button>
                 <button id="reload-btn">Сбросить порядок</button>

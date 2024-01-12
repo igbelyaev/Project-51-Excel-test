@@ -43,6 +43,8 @@ const idParam = {id: ['id', 'Описание'],
                  code: ['Код', 'Описание номенклатуры']};
 let codeId, descrId;
 
+movingSpecs();
+
 
 readBtn.addEventListener('click', (e) => {
     console.log("Event has happened");
@@ -82,13 +84,12 @@ readBtn.addEventListener('click', (e) => {
 
             showSpecs(specsTemp, false);
             dragAndDrop();
-
                                
             
 
             console.log('inter stop');
             
-        }, 500);
+        }, 1000);
 
 
     };
@@ -97,7 +98,8 @@ readBtn.addEventListener('click', (e) => {
     if (specsFile.files.length && descrFile.files.length) {
 
         init();
-        e.target.disabled = true;
+        readBtn.disabled = true;
+        readBtn.classList.add('disabled');
         messagesList.innerHTML = '';
 
     } else {
@@ -155,8 +157,15 @@ function clearForm() {
 
     specList.innerHTML = '';
     messagesList.innerHTML = '';
+    document.querySelector('.tasks_canceled').innerHTML = '';
     taskBtn.classList.add('hidden');
+    document.querySelector('.task_box').classList.add('hidden');
+    document.querySelector('.tasks_canceled').classList.add('hidden');
+    document.querySelector('.btn_box').classList.add('hidden');
+    document.querySelector('#reload-btn').classList.remove('hidden');
+    document.querySelector('.task_control').classList.remove('centered');
     readBtn.disabled = false;
+    readBtn.classList.remove('disabled');
 
 
 }
@@ -466,6 +475,16 @@ function showSpecs(array, clear) {
     }
 
     taskBtn.classList.remove('hidden');
+    document.querySelector('.task_box').classList.remove('hidden');
+
+    if (codeId == 'id') {
+        document.querySelector('.tasks_canceled').classList.remove('hidden');
+        document.querySelector('.task_box').classList.remove('hidden');
+        document.querySelector('.btn_box').classList.remove('hidden');
+        document.querySelector('#reload-btn').classList.add('hidden');    
+    } else {
+        document.querySelector('.task_control').classList.add('centered');    
+    }
 
     messagesList.innerHTML += `
             <li class="info-message">Расставьте характеристики справа в нужном порядке путем перетаскивания</li>
@@ -511,77 +530,185 @@ function correctOrder(massive) {
 
 function dragAndDrop() {
     const tasksListElement = document.querySelector(`.tasks_list`);
+    const tasksCanceledElement = document.querySelector(`.tasks_canceled`);
+    const tasksArea = document.querySelector(`.task_box`);
     const taskElements = tasksListElement.querySelectorAll(`.tasks_item`);
+    let activeElement, currentElement, nextElement;
 
-    // Перебираем все элементы списка и присваиваем нужное значение
+    
     for (const task of taskElements) {
         task.draggable = true;
     }
 
-    tasksListElement.addEventListener(`dragstart`, (evt) => {
-        evt.target.classList.add(`selected`);
+    tasksArea.addEventListener(`dragstart`, (e) => {
+        e.target.classList.add(`selected`);
     })
 
-    tasksListElement.addEventListener(`dragend`, (evt) => {
-        evt.target.classList.remove(`selected`);
+    tasksArea.addEventListener(`dragend`, (e) => {
+        e.target.classList.remove(`selected`);
     });
 
 
-    tasksListElement.addEventListener(`dragover`, (evt) => {
-        // Разрешаем сбрасывать элементы в эту область
-        evt.preventDefault();
+    
+    tasksArea.addEventListener(`dragover`, (e) => {
+        e.preventDefault();
+    });
 
-        // Находим перемещаемый элемент
-        const activeElement = tasksListElement.querySelector(`.selected`);
-        // Находим элемент, над которым в данный момент находится курсор
-        const currentElement = evt.target;
-        // Проверяем, что событие сработало:
-        // 1. не на том элементе, который мы перемещаем,
-        // 2. именно на элементе списка
-        const isMoveable = activeElement !== currentElement &&
-              currentElement.classList.contains(`tasks_item`);
+    tasksArea.addEventListener(`drop`, (e) => {
+        e.preventDefault();
 
-        // Если нет, прерываем выполнение функции
-        if (!isMoveable) {
-            return;
+        activeElement = tasksArea.querySelector(`.selected`);
+        activeElement.classList.remove('clicked');
+
+        if (e.target.tagName == 'UL') {
+            nextElement = getNextElement(e.clientY, e.target);
+            
+            placeToTheEnd(e);
+            
+        } else {
+            nextElement = getNextElement(e.clientY, e.target);
+            
+            if (nextElement.tagName == 'LI') {
+                activeElement.classList.remove('clicked');
+                nextElement.insertAdjacentElement('beforebegin', activeElement);
+            } else {
+                activeElement.classList.remove('clicked');
+                nextElement.insertAdjacentElement('beforeend', activeElement);
+            }
+            
+        }
+    
+
+
+        
+    })
+
+    const getNextElement = (cursorPosition, currentElement) => {
+  
+        const currentElementCoord = currentElement.getBoundingClientRect();
+        
+        const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
+    
+        const nextElement = (cursorPosition < currentElementCenter) ?
+            currentElement :
+            (currentElement.nextElementSibling) ? currentElement.nextElementSibling : currentElement.parentElement;
+    
+        return nextElement;
+    };
+    
+    const isThereIsNextSibling = (cursorPosition, target) => {
+    
+        const list = target.getElementsByClassName(`tasks_item`);
+    
+        for (let i=0; i < list.length; i++) {
+            const listCoord = list[i].getBoundingClientRect();
+    
+            if (cursorPosition < listCoord.y) {
+                return list[i];
+            }
+        }
+    
+        return target;
+    
+    };
+    
+    const placeToTheEnd = (e) => {
+    
+        nextElement = isThereIsNextSibling(e.clientY, e.target);
+        activeElement.classList.remove('clicked');
+    
+        if (nextElement !== e.target) {
+            nextElement.insertAdjacentElement('beforebegin', activeElement);
+        } else {
+            nextElement.insertAdjacentElement('beforeend', activeElement);
+        }
+    };
+
+    
+} 
+
+function movingSpecs() {
+    const movingBtns = document.querySelector('.btn_box');
+    const taskMovingBtn = movingBtns.querySelector('#tasks-move-btn');
+    const taskEscBtn = movingBtns.querySelector('#tasks-esc-btn');
+    const cancelMovingBtn = movingBtns.querySelector('#cancel-move-btn');
+    const cancelEscBtn = movingBtns.querySelector('#cancel-esc-btn');
+    const tasksArea = document.querySelector(`.task_box`);
+
+    tasksArea.addEventListener('click', (e) => {
+        if (e.target.classList.contains('tasks_item') && codeId == 'id') e.target.classList.toggle('clicked');
+    });
+
+    
+    movingBtns.addEventListener('click', (e) => {
+        switch (e.target) {
+            case (taskMovingBtn):
+                moveList(document.querySelector('.tasks_list'), document.querySelector('.tasks_canceled'));
+                break;
+            case (taskEscBtn):
+                clearList(document.querySelector('.tasks_list'));
+                break;
+            case (cancelMovingBtn):
+                moveList(document.querySelector('.tasks_canceled'), document.querySelector('.tasks_list'));
+                break;
+            case (cancelEscBtn):
+                clearList(document.querySelector('.tasks_canceled'));
+                break;
+        }
+    });
+
+
+    const moveList = (fromZone, toZone) => {
+        const wholeList = fromZone.querySelectorAll('.tasks_item');
+        const resultList = [];
+
+        for (let i=0; i < wholeList.length; i++) {
+            if (wholeList[i].classList.contains('clicked')) {
+                resultList.push(wholeList[i]);
+            }
         }
 
-        // evt.clientY — вертикальная координата курсора в момент,
-        // когда сработало событие
-        const nextElement = getNextElement(evt.clientY, currentElement);
+        if (resultList.length) {
+            movingItems(resultList, toZone);
+        } else { movingItems(wholeList, toZone); }
 
-        // Проверяем, нужно ли менять элементы местами
-        if (
-            nextElement && 
-            activeElement === nextElement.previousElementSibling ||
-            activeElement === nextElement
-        ) {
-            // Если нет, выходим из функции, чтобы избежать лишних изменений в DOM
-            return;
+        for (let j=0; j < resultList.length; j++) {
+            resultList[j].classList.remove('clicked');
+        } 
+
+    };
+
+    const clearList = (fromZone) => {
+        const wholeList = fromZone.getElementsByClassName('tasks_item');
+        const resultList = [];
+
+        for (let i=0; i < wholeList.length; i++) {
+            if (wholeList[i].classList.contains('clicked')) {
+                resultList.push(wholeList[i]);
+            }
         }
 
-        tasksListElement.insertBefore(activeElement, nextElement);
-            });
-}
+        if (resultList.length) {
+            for (let j=0; j < resultList.length; j++) {
+                resultList[j].classList.remove('clicked');
+            } 
+        }
+        
+    };
 
-const getNextElement = (cursorPosition, currentElement) => {
-  // Получаем объект с размерами и координатами
-  const currentElementCoord = currentElement.getBoundingClientRect();
-  // Находим вертикальную координату центра текущего элемента
-  const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
+    const movingItems = (list, targetZone) => {
 
-  // Если курсор выше центра элемента, возвращаем текущий элемент
-  // В ином случае — следующий DOM-элемент
-  const nextElement = (cursorPosition < currentElementCenter) ?
-      currentElement :
-      currentElement.nextElementSibling;
-
-  return nextElement;
+        for (let i=0; i < list.length; i++) {
+            list[i].classList.remove('clicked');
+            targetZone.append(list[i]);
+        }
+    }
 };
 
 
 function processingArray(oldArray, newArray) {
-    const oderedList = specList.querySelectorAll('.tasks_item');
+    // const oderedList = specList.querySelectorAll('.tasks_item');
+    const oderedList = document.querySelector('.tasks_list').querySelectorAll('.tasks_item');
 
     for (let i=0; i < oderedList.length; i++) {
         const value = oderedList[i].textContent;

@@ -66,28 +66,77 @@ button {
     justify-content: space-around;
 }
 
-div {
-    margin-bottom: 50px;
+// div {
+//     margin-bottom: 50px;
+// }
+
+ul {
+    width: 500px;
 }
 
 // Drag & Drop elements styles
 
+.specs_panel {
+    width: 800px;
+}
+
 .tasks__title {
     margin-bottom: 20px;
-    // text-align: center;
-    // text-align: center;
-    // text-transform: uppercase;
-   }
+    text-align: center;
+}
   
-  .tasks_list, .messages_list {
-    width: 500px;
+.task_box, .btn_box, .drag_control {
+    display: flex;
+    justify-content: space-between;
+    max-width: 800px;
+    gap: 10px;
+}
+
+.drag_control {
+    width: 100%;
+    gap: unset;
+    margin-bottom: 45px;
+}
+
+.task_box {
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.btn_box {
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgb(167, 167, 167);
+}
+  
+.tasks_list, .messages_list, .tasks_canceled {
     margin: 0;
-    padding: 0;
-  
+    padding: 10px 5px;
     list-style: none;
-  }
+    border-radius: 10px;
+}
+
+.tasks_canceled {
+    background-color: rgb(196, 195, 195);
+    border: 1px solid rgb(167, 167, 167);
+    position: relative;
+    &::before {
+        display: block;
+        position: absolute;
+        top: 20px;
+        left: 109px;
+        text-transform: uppercase;
+        font-size: 20px;
+        color: #fff;
+        content: "зона неотбора";
+        z-index: 0;
+    }
+}
+
+.tasks_list {
+    border: 1px solid rgb(167, 167, 167);
+}
   
-  .tasks_item {
+.tasks_item {
     transition: background-color 0.5s;
     margin-bottom: 10px;
     padding: 5px;
@@ -96,44 +145,70 @@ div {
     border-radius: 10px;
     cursor: move;
     color: #fff;
-    // background-color: #dff2ef;
     background-color: #46d265;
-    // background-color: green;
+    position: relative;
+    z-index: 100;
   
     transition: background-color 0.5s;
-  }
+}
   
-  .tasks_item:last-child {
+.tasks_item:last-child {
     margin-bottom: 0;
-  }
+}
+
+.task_control {
+    @include btns_group;
+    
+}
+
+.centered {
+    width: 500px;
+    margin: 0 auto;
+}
+
+.disabled {
+    background-color: rgb(196, 195, 195);
+    &:hover {
+        background-color: rgb(196, 195, 195);
+    }
+}
   
-  .selected {
+.selected {
     background-color: blue;
     opacity: 0.6;
-  }
+}
 
-  .start_clear_btns {
+.clicked {
+    background-color: rgb(247, 0, 255);
+}
+
+.start_clear_btns {
     @include btns_group;
     width: 550px;
-  }
-  .task_control {
-    @include btns_group;
-  }
+}
 
-  .hidden {
+
+.hidden {
     display: none;
-  }
+}
 
 .control {
     width: 600px;
 }
 
 .choice {
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgb(167, 167, 167);
+    margin-bottom: 40px;
+   
     .choice__title {
         margin-bottom: 20px;
     }
+}
+
+.underline {
+    width: 550px;
+    height: 1px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgb(167, 167, 167);
 }
 
   // стили форм выбора файлов
@@ -144,13 +219,13 @@ div {
 }
 
 .input-file-text {
+    width: 300px;
+    height: 40px;
+    float: right;
     padding: 0 10px;
+    font-size: 14px;
     line-height: 40px;
     text-align: left;
-    height: 40px;
-    // display: inline-block;
-    float: right;
-    width: 300px;
     border-radius: 0px 6px 6px 0px ;
     border: 1px solid #ddd;
     overflow: hidden;
