@@ -3,8 +3,8 @@
 import { Workbook } from 'exceljs';
 import { saveAs } from 'file-saver';
 
-const workbook = new Workbook();
-const wbDescr = new Workbook();
+let workbook = new Workbook();
+let wbDescr = new Workbook();
 
 let ws = undefined;
 let wsDescr = undefined;
@@ -50,6 +50,11 @@ readBtn.addEventListener('click', (e) => {
     console.log("Event has happened");
 
     async function init() {
+        workbook = new Workbook();
+        wbDescr = new Workbook();
+        let cashedWorkbook = workbook._worksheets.length;
+        let cashedWbDescr = wbDescr._worksheets.length;
+        
         file = specsFile.files[0];
         await readFile(file, workbook);
         
@@ -57,7 +62,15 @@ readBtn.addEventListener('click', (e) => {
         fileName = file.name;
         await readFile(file, wbDescr);
         
-        const timeId = setTimeout(function() {
+
+        function doStuff() {
+            if (workbook._worksheets.length === cashedWorkbook 
+                || wbDescr._worksheets.length === cashedWbDescr) {
+                
+                setTimeout(doStuff, 50);
+                return;
+            }
+            
             wsDescr = workbook.addWorksheet('Descr');
             ws = workbook.worksheets[0];
             // ws = workbook.getWorksheet('TDSheet');
@@ -84,13 +97,11 @@ readBtn.addEventListener('click', (e) => {
 
             showSpecs(specsTemp, false);
             dragAndDrop();
-                               
-            
-
+                            
             console.log('inter stop');
-            
-        }, 1000);
+        }
 
+        doStuff();
 
     };
 
@@ -106,9 +117,7 @@ readBtn.addEventListener('click', (e) => {
         messagesList.innerHTML += `
             <li class="error-message">Вы не выбрали файлы</li>
         `;
-    }    
-
-    
+    }        
 
 });
 
