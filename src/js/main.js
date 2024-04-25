@@ -76,9 +76,9 @@ readBtn.addEventListener('click', (e) => {
             // ws = workbook.getWorksheet('TDSheet');
             newWs = wbDescr.worksheets[0];
             // newWs = wbDescr.getWorksheet('TDSheet');
-
+            
             copySheet(newWs, wsDescr);
-
+            
             checkIdParam(wsDescr);
 
             if (codeId == 'Код') {
@@ -242,7 +242,7 @@ function checkIdParam(worksheet) {
 } 
 
 function removeEmptyRows(worksheet) {
-
+    
     let position = 0;
 
     next: for (let i=1; i < 12; i++) {
@@ -250,7 +250,7 @@ function removeEmptyRows(worksheet) {
         
         for (let j=1; j < 10; j++) {
 
-            if (row.getCell(j).value == 'Код') {
+            if (row.getCell(j).value == codeId) {
 
                 position = i;
                 break next;
@@ -258,9 +258,9 @@ function removeEmptyRows(worksheet) {
         }
         
     }
-
+    
     worksheet.spliceRows(1, position-1);
-
+    
     return worksheet;
 
 }
@@ -274,7 +274,7 @@ function removeEmptyRowsDescr(worksheet) {
         
         for (let j=1; j < 10; j++) {
 
-            if (row.getCell(j).value == 'Номенклатура') {
+            if (row.getCell(j).value == codeId) {
 
                 position = i;
                 break next;
@@ -295,8 +295,6 @@ function removeEmptyRowsDescr(worksheet) {
                     break;
             }
         }
-
-        
         
         for (let i=2; i < 10; i++) {
             const row = worksheet.getRow(i);
@@ -304,16 +302,12 @@ function removeEmptyRowsDescr(worksheet) {
             if (row.getCell(index).value) {
                 index = i;
                 break;
-            }
-                 
+            }                
         }
-
         
         if (index - position > 1) {
             worksheet.spliceRows(2, index - 2);
-        }
-
-        
+        }        
     }
 
     if (position > 1) {
@@ -397,8 +391,8 @@ function getSpecsList() {
 
         for (let i=1; i <= ws.columnCount; i++) {
             const cell = row.getCell(i);
-    
-            if (cell.fill.bgColor && cell.value !== 'ед.изм.') {
+
+            if (cell.value && cell.fill.bgColor && cell.value !== 'ед.изм.') {
     
                 const neededCell = [cell.address, i, cell.value, 'false', 0, 'false'];
                 if (!repeatFlag) {
@@ -841,13 +835,14 @@ function mergeSkuInfo() {
     for (let i=2; i <= ws.rowCount; i++) {
         const row = ws.getRow(i);
         
-        specsField[row.getCell(index).value] = row.getCell(ws.columnCount).value;
+        if (row.getCell(index).value) {
+            specsField[row.getCell(index).value] = row.getCell(ws.columnCount).value;
+        }        
 
     }
 
-    
     row = wsDescr.getRow(1);
-    for (let j=1; j <= ws.columnCount; j++) {
+    for (let j=1; j <= wsDescr.columnCount; j++) {
         if (row.getCell(j).value == codeId) index = j;
         if (row.getCell(j).value == descrId) indexDescr = j;
     }
@@ -861,9 +856,13 @@ function mergeSkuInfo() {
     for (let k=2; k <= wsDescr.rowCount; k++) {
         const row = wsDescr.getRow(k);
 
-        row.getCell(indexDescr).alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
-        row.getCell(indexDescr).font = { name: 'Arial', size: 8 };
-        row.getCell(indexDescr).value = `${row.getCell(indexDescr).value}\n\n${specsField[row.getCell(index)]}`;
+        if (row.getCell(index).value) {
+
+            row.getCell(indexDescr).alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            row.getCell(indexDescr).font = { name: 'Arial', size: 8 };
+            row.getCell(indexDescr).value = `${row.getCell(indexDescr).value}\n\n${specsField[row.getCell(index)]}`;
+        
+        }
 
     }
 
